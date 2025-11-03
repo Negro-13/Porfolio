@@ -19,8 +19,7 @@
         <div class="container-fluid">
             <a class="navbar-brand" href="#">Offcanvas dark navbar</a>
             <div class="d-flex align-items-center">
-                {% if username %}
-                    <span class="text-light me-2">Bienvenido, {{ username }}</span>
+                {% if logged_in %}
                     <a href="{{ url_for('logout') }}" class="btn btn-danger me-2">Cerrar sesión</a>
                 {% else %}
                     <a href="{{ url_for('login') }}" class="btn btn-success me-2">Login</a>
@@ -73,19 +72,10 @@
 
     <h1>¡Bienvenido a mi proyecto Flask!</h1>
     
-    <!-- Después del nav, agregar mensajes flash -->
-    {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-            {% for category, message in messages %}
-                <div class="alert alert-{{ category }} mt-5">{{ message }}</div>
-            {% endfor %}
-        {% endif %}
-    {% endwith %}
+    <!-- Mensajes ocultos por preferencia del usuario -->
 
     <div class="container mt-5">
-        {% if username %}
-            <p>Has iniciado sesión como {{ username }}</p>
-        {% endif %}
+        <!-- No se muestra el nombre de usuario según preferencia -->
     </div>
     <!-- Footer -->
     <footer class="footer mt-5 py-4 bg-dark text-white">

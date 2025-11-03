@@ -56,10 +56,10 @@
                             </ul>
                         </li>
                     </ul>
-                    <form class="d-flex mt-3" role="search">
-                        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" />
-                        <button class="btn btn-success" type="submit">Search</button>
-                    </form>
+                        <form class="d-flex mt-3" role="search">
+                            <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" />
+                            <button class="btn btn-success" type="submit">Search</button>
+                        </form>
                 </div>
             </div>
         </div>
@@ -67,18 +67,18 @@
     <!-- Cuerpo -->
     <div class="container mt-5">
         <div class="row justify-content-center">
-            <div class="col-md-6 col-lg-4">
-                <form class="bg-light p-4 rounded shadow">
+                <div class="col-md-6 col-lg-4">
+                <form class="bg-light p-4 rounded shadow" action="{{ url_for('login') }}" method="post">
                     <div class="mb-3">
                         <label for="exampleInputEmail1" class="form-label">Usuario</label>
-                        <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"
-                            placeholder="ejemplo@correo.com">
+                        <input type="email" name="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"
+                            placeholder="ejemplo@correo.com" required>
                         <div id="emailHelp" class="form-text">Nunca compartiremos tu correo con nadie más.</div>
                     </div>
                     <div class="mb-3">
                         <label for="exampleInputPassword1" class="form-label">Contraseña</label>
-                        <input type="password" class="form-control" id="exampleInputPassword1"
-                            placeholder="Ingresa tu contraseña">
+                        <input type="password" name="password" class="form-control" id="exampleInputPassword1"
+                            placeholder="Ingresa tu contraseña" required>
                     </div>
                     <div class="mb-3 form-check">
                         <input type="checkbox" class="form-check-input" id="exampleCheck1">
