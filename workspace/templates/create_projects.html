@@ -1,15 +1,12 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mi Proyecto Flask</title>
-    <!-- Bootstrap CSS -->
+    <title>Panel Admin</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Custom CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
-    <!-- Bootstrap JS Bundle with Popper -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </head>
 
@@ -17,11 +14,12 @@
     <!-- Nav bar -->
     <nav class="navbar navbar-dark bg-dark fixed-top">
         <a class="navbar-brand ms-3" href="#">
-            <img src="https://github.githubassets.com/assets/GitHub-Mark-ea2971cee799.png" alt="Logo" width="30" height="24" class="d-inline-block align-text-top">
+            <img src="https://github.githubassets.com/assets/GitHub-Mark-ea2971cee799.png" alt="Logo" width="30"
+                height="24" class="d-inline-block align-text-top">
             Máximo Vijarra
         </a>
         <div class="d-flex align-items-center">
-            <a href="{{ url_for('login') }}" class="btn btn-success me-2">Login</a>
+            <a href="{{ url_for('home') }}" class="btn btn-danger me-2">Cerrar sesión</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas"
                 data-bs-target="#offcanvasDarkNavbar" aria-controls="offcanvasDarkNavbar"
                 aria-label="Toggle navigation">
@@ -66,44 +64,44 @@
         </div>
         </div>
     </nav>
+
     <!-- Cuerpo -->
     <div class="contenido">
         <div class="container mt-5 pt-5">
-            <h1>¡Bienvenido a mi proyecto Flask!</h1>
+            <h1>Creacion de projectos</h1>
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ 'danger' if category == 'danger' else ( 'success' if category == 'success' else 'info') }}" role="alert">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+            {% endwith %}
+            <form method="post" action="{{ url_for('create_projects') }}">
+                <h2>Titulo</h2>
+                <div class="input-group mb-3">
+                    <input name="titulo" type="text" class="form-control" placeholder="Titulo" aria-label="Titulo" required>
+                </div>
+                <h2>Contenido</h2>
+                <div class="input-group">
+                    <textarea name="contenido" class="form-control" aria-label="Contenido" rows="6" required></textarea>
+                </div>
+                <h2>Fecha</h2>
+                <div class="input-group mb-3">
+                    <input name="fecha" type="date" class="form-control" aria-label="Fecha">
+                </div>
+                <div class="mt-3">
+                    <button type="submit" class="btn btn-primary">Crear proyecto</button>
+                    <a href="{{ url_for('admin_index') }}" class="btn btn-secondary ms-2">Cancelar</a>
+                </div>
+            </form>
 
-            <div class="row mt-4">
-                {% if projects and projects|length > 0 %}
-                    {% for p in projects %}
-                        <div class="col-12 mb-3">
-                            <div class="card h-100">
-                                <div class="card-body">
-                                    <h5 class="card-title">{{ p.titulo }}</h5>
-                                    <p class="card-text">{{ p.contenido }}</p>
-                                </div>
-                                <div class="card-footer text-muted">
-                                    {{ p.fecha }}
-                                </div>
-                            </div>
-                        </div>
-                    {% endfor %}
-                {% else %}
-                    <div class="col-12">
-                        <p>No hay proyectos para mostrar.</p>
-                    </div>
-                {% endif %}
-            </div>
         </div>
     </div>
 
     <!-- Footer -->
-    <footer class="footer mt-5 py-4 bg-dark text-white">
+    <footer class="footer mt-5 py-4 bg-dark text-white fixed-bottom">
         <div class="container text-center">
             <p class="mb-1">© 2025 Tu Nombre. Todos los derechos reservados.</p>
-            <ul class="list-inline mb-0">
-                <li class="list-inline-item"><a href="#" class="text-white text-decoration-none">Inicio</a></li>
-                <li class="list-inline-item"><a href="#" class="text-white text-decoration-none">Contacto</a></li>
-                <li class="list-inline-item"><a href="#" class="text-white text-decoration-none">Privacidad</a></li>
-            </ul>
         </div>
     </footer>
 

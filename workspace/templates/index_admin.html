@@ -11,26 +11,95 @@
 </head>
 
 <body>
+    <!-- Nav bar -->
     <nav class="navbar navbar-dark bg-dark fixed-top">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="#">Admin Panel</a>
-            <div class="d-flex align-items-center">
-                <a href="{{ url_for('logout') }}" class="btn btn-danger me-2">Cerrar sesión</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas"
-                    data-bs-target="#offcanvasDarkNavbar" aria-controls="offcanvasDarkNavbar"
-                    aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
+        <a class="navbar-brand ms-3" href="#">
+            <img src="https://github.githubassets.com/assets/GitHub-Mark-ea2971cee799.png" alt="Logo" width="30"
+                height="24" class="d-inline-block align-text-top">
+            Máximo Vijarra
+        </a>
+        <div class="d-flex align-items-center">
+            <a href="{{ url_for('home') }}" class="btn btn-danger me-2">Cerrar sesión</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas"
+                data-bs-target="#offcanvasDarkNavbar" aria-controls="offcanvasDarkNavbar"
+                aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        </div>
+        <div class="offcanvas offcanvas-end text-bg-dark" tabindex="-1" id="offcanvasDarkNavbar"
+            aria-labelledby="offcanvasDarkNavbarLabel">
+            <div class="offcanvas-header">
+                <h5 class="offcanvas-title" id="offcanvasDarkNavbarLabel">Dark offcanvas</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"
+                    aria-label="Close"></button>
+            </div>
+            <div class="offcanvas-body">
+                <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="#">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Link</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                            aria-expanded="false">
+                            Dropdown
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-dark">
+                            <li><a class="dropdown-item" href="#">Action</a></li>
+                            <li><a class="dropdown-item" href="#">Another action</a></li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li><a class="dropdown-item" href="#">Something else here</a></li>
+                        </ul>
+                    </li>
+                </ul>
+                <form class="d-flex mt-3" role="search">
+                    <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" />
+                    <button class="btn btn-success" type="submit">Search</button>
+                </form>
             </div>
         </div>
+        </div>
     </nav>
+    <!-- Cuerpo -->
+    <div class="contenido">
+        <div class="container mt-5 pt-5">
+            <div class="d-flex justify-content-between align-items-center">
+                <h1>Panel de administración</h1>
+                <a href="{{ url_for('create_projects') }}" class="btn btn-primary">Crear proyecto</a>
+            </div>
+            <p>Has iniciado sesión en el área de administración.</p>
+            <p>Aquí puedes colocar las opciones de administración de tu portafolio.</p>
 
-    <div class="container mt-5 pt-5">
-        <h1>Panel de administración</h1>
-        <p>Has iniciado sesión en el área de administración.</p>
-        <p>Aquí puedes colocar las opciones de administración de tu portafolio.</p>
+            <div class="row mt-4">
+                {% if projects and projects|length > 0 %}
+                    {% for p in projects %}
+                        <div class="col-12 mb-3">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ p.titulo }}</h5>
+                                    <p class="card-text">{{ p.contenido }}</p>
+                                </div>
+                                <div class="card-footer d-flex justify-content-between align-items-center">
+                                    <small class="text-muted">{{ p.fecha }}</small>
+                                    <div>
+                                        <a href="{{ url_for('edit_projects') }}" class="btn btn-sm btn-outline-secondary">Editar</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="col-12">
+                        <p>No hay proyectos registrados.</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
     </div>
-
     <footer class="footer mt-5 py-4 bg-dark text-white fixed-bottom">
         <div class="container text-center">
             <p class="mb-1">© 2025 Tu Nombre. Todos los derechos reservados.</p>
