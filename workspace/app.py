@@ -34,7 +34,7 @@ def get_projects():
         conn = get_db_connection()
         # Usamos un cursor que devuelva diccionarios para facilitar la plantilla
         cursor = conn.cursor(dictionary=True)
-        cursor.execute("SELECT id, Titulo, Contenido, fecha FROM Proyectos ORDER BY id DESC")
+        cursor.execute("SELECT id, Titulo, Contenido, fecha, Orientacion FROM Proyectos ORDER BY id DESC")
         rows = cursor.fetchall()
         projects = []
         for r in rows:
@@ -43,6 +43,7 @@ def get_projects():
                 'titulo': r.get('Titulo'),
                 'contenido': r.get('Contenido'),
                 'fecha': r.get('fecha'),
+                'orientacion': r.get('Orientacion'),
             })
         return projects
     except Exception as e:
@@ -61,13 +62,78 @@ def get_projects():
             pass
 
 
+def get_experiencias():
+    """Devuelve lista de experiencias desde la tabla Experiencias.
+    Cada elemento: id, Lugar, Tipo, Fecha_inicio, Fecha_fin, Descripcion
+    """
+    conn = None
+    cursor = None
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor(dictionary=True)
+        cursor.execute("SELECT id, Lugar, Tipo, Fecha_inicio, Fecha_fin, Descripcion FROM Experiencias ORDER BY Fecha_inicio DESC")
+        rows = cursor.fetchall()
+        experiencias = []
+        for r in rows:
+            experiencias.append({
+                'id': r.get('id'),
+                'lugar': r.get('Lugar'),
+                'tipo': r.get('Tipo'),
+                'fecha_inicio': r.get('Fecha_inicio'),
+                'fecha_fin': r.get('Fecha_fin'),
+                'descripcion': r.get('Descripcion'),
+            })
+        return experiencias
+    except Exception as e:
+        print('DB error get_experiencias:', e)
+        return []
+    finally:
+        try:
+            if cursor:
+                cursor.close()
+        except Exception:
+            pass
+        try:
+            if conn:
+                conn.close()
+        except Exception:
+            pass
+
 @app.route('/')
 def home():
     # Pasamos sólo el estado de sesión (logueado o no). No se mostrará el nombre.
     logged_in = session.get('logged_in', False)
     # Obtener proyectos y pasarlos a la plantilla pública
     projects = get_projects()
-    return render_template('index.html', logged_in=logged_in, projects=projects)
+    experiencias = get_experiencias()
+    return render_template('index.html', logged_in=logged_in, projects=projects, experiencias=experiencias)
+
+@app.route('/admin')
+def admin_index():
+    # Si no está logueado, redirigimos al home público
+    if not session.get('logged_in'):
+        return redirect(url_for('home'))
+    # Obtener proyectos y mostrarlos en el panel de administración
+    projects = get_projects()
+    experiencias = get_experiencias()
+    return render_template('index_admin.html', projects=projects, experiencias=experiencias, logged_in=True)
+
+@app.route('/projects')
+def projects():
+    # Pasamos sólo el estado de sesión (logueado o no). No se mostrará el nombre.
+    logged_in = session.get('logged_in', False)
+    projects = get_projects()
+    return render_template('proyectos.html', logged_in=logged_in, projects=projects)
+
+@app.route('/admin/projects')
+def admin_projects():
+    # Si no está logueado, redirigimos al home público
+    if not session.get('logged_in'):
+        return redirect(url_for('home'))
+    # Obtener proyectos y mostrarlos en el panel de administración
+    projects = get_projects()
+    return render_template('proyectos_admin.html', projects=projects, logged_in=True)
+
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -117,16 +183,6 @@ def logout():
     session.pop('logged_in', None)
     return redirect(url_for('home'))
 
-
-@app.route('/admin')
-def admin_index():
-    # Si no está logueado, redirigimos al home público
-    if not session.get('logged_in'):
-        return redirect(url_for('home'))
-    # Obtener proyectos y mostrarlos en el panel de administración
-    projects = get_projects()
-    return render_template('index_admin.html', projects=projects, logged_in=True)
-
 @app.route('/admin/projects_edits')
 def edit_projects():
     if not session.get('logged_in'):
@@ -143,11 +199,16 @@ def create_projects():
         titulo = request.form.get('titulo', '').strip()
         contenido = request.form.get('contenido', '').strip()
         fecha = request.form.get('fecha', '').strip()
+        orientacion = request.form.get('orientacion', '').strip()
 
         # Si no se envió fecha, usar la fecha de hoy
         if not fecha:
             from datetime import date
             fecha = date.today().isoformat()
+
+        # Si no se envió orientacion, usar 'Otros'
+        if not orientacion:
+            orientacion = 'Otros'
 
         # Validación mínima
         if not titulo or not contenido:
@@ -160,10 +221,10 @@ def create_projects():
             conn = get_db_connection()
             cursor = conn.cursor()
             # Para depuración imprimimos los parámetros que vamos a insertar
-            print('Insertando proyecto con:', {'titulo': titulo, 'contenido_len': len(contenido), 'fecha': fecha})
+            print('Insertando proyecto con:', {'titulo': titulo, 'orientacion': orientacion, 'contenido_len': len(contenido), 'fecha': fecha})
             cursor.execute(
-                "INSERT INTO Proyectos (Titulo, Contenido, fecha) VALUES (%s, %s, %s)",
-                (titulo, contenido, fecha),
+                "INSERT INTO Proyectos (Titulo, Orientacion, Contenido, fecha) VALUES (%s, %s, %s, %s)",
+                (titulo, orientacion, contenido, fecha),
             )
             conn.commit()
             flash('Proyecto creado correctamente.', 'success')
@@ -189,6 +250,59 @@ def create_projects():
 
     # GET: mostrar el formulario
     return render_template('create_projects.html', logged_in=session.get('logged_in', False))
+
+
+@app.route('/admin/create_experiencias', methods=['GET', 'POST'])
+def create_experiencias():
+    if not session.get('logged_in'):
+        return redirect(url_for('home'))
+
+    if request.method == 'POST':
+        lugar = request.form.get('lugar', '').strip()
+        tipo = request.form.get('tipo', '').strip()
+        fecha_inicio = request.form.get('fecha_inicio', '').strip()
+        fecha_fin = request.form.get('fecha_fin', '').strip()
+        descripcion = request.form.get('descripcion', '').strip()
+
+        # Si no se envía tipo, usar 'Laboral' por defecto
+        if not tipo:
+            tipo = 'Laboral'
+
+        # Validación mínima
+        if not lugar or not descripcion or not fecha_inicio:
+            flash('Lugar, fecha inicio y descripción son obligatorios.', 'danger')
+            return render_template('create_experiencias.html', logged_in=session.get('logged_in', False))
+
+        # Intentamos insertar en DB
+        conn = None
+        cursor = None
+        try:
+            conn = get_db_connection()
+            cursor = conn.cursor()
+            cursor.execute(
+                "INSERT INTO Experiencias (Lugar, Tipo, Fecha_inicio, Fecha_fin, Descripcion) VALUES (%s, %s, %s, %s, %s)",
+                (lugar, tipo, fecha_inicio if fecha_inicio else None, fecha_fin if fecha_fin else None, descripcion),
+            )
+            conn.commit()
+            flash('Experiencia creada correctamente.', 'success')
+            return redirect(url_for('admin_index'))
+        except mysql.connector.Error as e:
+            import traceback
+            traceback.print_exc()
+            flash(f'Error al guardar la experiencia: {e}', 'danger')
+        finally:
+            try:
+                if cursor:
+                    cursor.close()
+            except Exception:
+                pass
+            try:
+                if conn:
+                    conn.close()
+            except Exception:
+                pass
+
+    return render_template('create_experiencias.html', logged_in=session.get('logged_in', False))
 
 if __name__ == '__main__':
     app.run(debug=True)

@@ -1,0 +1,5 @@
+/* CSS específico para proyectos_admin.html */
+@import "index.css";
+
+/* Overrides administrativos */
+.card { border-left: 4px solid #0d6efd; }

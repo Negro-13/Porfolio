@@ -1,0 +1,9 @@
+/* CSS específico para index_admin.html
+   Importa estilos generales desde index.css y permite añadir overrides.
+*/
+@import "index.css";
+
+/* Ejemplo de override: espacio extra para contenido */
+.contenido {
+    padding-bottom: 2rem;
+}

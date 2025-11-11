@@ -1,0 +1,5 @@
+/* CSS específico para proyectos.html */
+@import "index.css";
+
+/* Ejemplo: tarjetas con más separación */
+.card { margin-bottom: 1rem; }

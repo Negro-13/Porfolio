@@ -1,0 +1,5 @@
+/* CSS específico para create_projects.html */
+@import "index.css";
+
+/* Ajustes de formulario */
+form.bg-light { max-width: 900px; margin: 0 auto; }

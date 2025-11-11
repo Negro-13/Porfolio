@@ -9,7 +9,7 @@
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/proyectos.css') }}">
     <!-- Bootstrap JS Bundle with Popper -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </head>
@@ -22,6 +22,15 @@
                 height="24" class="d-inline-block align-text-top" />
             Máximo Vijarra
         </a>
+
+        <div class="d-flex align-items-center">
+            <a href="{{ url_for('login') }}" class="btn btn-success me-2">Login</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas"
+                data-bs-target="#offcanvasDarkNavbar" aria-controls="offcanvasDarkNavbar"
+                aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        </div>
 
         <div class="offcanvas offcanvas-end text-bg-dark" tabindex="-1" id="offcanvasDarkNavbar"
             aria-labelledby="offcanvasDarkNavbarLabel">
@@ -60,33 +69,35 @@
         </div>
     </nav>
     <!-- Cuerpo -->
-    <div class="container mt-5">
-        <div class="row justify-content-center">
-                <div class="col-md-6 col-lg-4">
-                <form class="bg-light p-4 rounded shadow" action="{{ url_for('login') }}" method="post">
-                    <div class="mb-3">
-                        <label for="exampleInputEmail1" class="form-label">Usuario</label>
-                        <input type="email" name="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"
-                            placeholder="ejemplo@correo.com" required>
-                        <div id="emailHelp" class="form-text">Nunca compartiremos tu correo con nadie más.</div>
+    <div class="contenido">
+        <div class="container mt-5 pt-5">
+            <h1>¡Bienvenido a mi proyecto Flask!</h1>
+
+            <div class="row mt-4">
+                {% if projects and projects|length > 0 %}
+                    {% for p in projects %}
+                        <div class="col-12 mb-3">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ p.titulo }}</h5>
+                                    <p class="mb-1"><span class="badge bg-secondary">{{ p.orientacion }}</span></p>
+                                    <p class="card-text">{{ p.contenido }}</p>
+                                </div>
+                                <div class="card-footer text-muted">
+                                    {{ p.fecha }}
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="col-12">
+                        <p>No hay proyectos para mostrar.</p>
                     </div>
-                    <div class="mb-3">
-                        <label for="exampleInputPassword1" class="form-label">Contraseña</label>
-                        <input type="password" name="password" class="form-control" id="exampleInputPassword1"
-                            placeholder="Ingresa tu contraseña" required>
-                    </div>
-                    <div class="mb-3 form-check">
-                        <input type="checkbox" class="form-check-input" id="exampleCheck1">
-                        <label class="form-check-label" for="exampleCheck1">Recordarme</label>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Iniciar Sesión</button>
-                </form>
+                {% endif %}
             </div>
         </div>
     </div>
-    <br>
-    <br>
-    
+
     <!-- Footer -->
     <footer class="footer mt-5 py-4 bg-dark text-white">
         <div class="container-fluid text-center">
