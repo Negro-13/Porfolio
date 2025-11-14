@@ -6,6 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mi Proyecto Flask</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech&display=swap" rel="stylesheet">
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Custom CSS -->
@@ -15,8 +19,25 @@
 </head>
 
 <body>
-    <!-- Nav bar -->
-    <nav class="navbar navbar-dark bg-dark fixed-top">
+    <!-- Fondo animado de cuadrados -->
+    <div class="white">
+        <div class="squares">
+            <div class="square"></div>
+            <div class="square"></div>
+            <div class="square"></div>
+            <div class="square"></div>
+            <div class="square"></div>
+            <div class="square"></div>
+            <div class="square"></div>
+            <div class="square"></div>
+            <div class="square"></div>
+        </div>
+    </div>
+
+    <!-- Contenedor del contenido principal sobre el fondo -->
+    <div class="main-content">
+        <!-- Nav bar -->
+        <nav class="navbar navbar-dark bg-dark fixed-top">
         <a class="navbar-brand ms-3" href="#">
             <img src="https://github.githubassets.com/assets/GitHub-Mark-ea2971cee799.png" alt="Logo" width="30"
                 height="24" class="d-inline-block align-text-top" />
@@ -44,10 +65,22 @@
             <div class="offcanvas-body d-flex flex-column h-100">
                 <ul class="navbar-nav flex-grow-1 pe-3">
                     <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="{{ url_for('admin_index') }}">Inicio</a>
+                        <a href="{{ url_for('admin_index') }}" class="btn-liquid" aria-current="page">
+                            <span>Inicio</span>
+                            <span class="liquid"></span>
+                        </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('admin_projects') }}">Proyectos</a>
+                        <a href="{{ url_for('admin_projects') }}" class="btn-liquid">
+                            <span>Proyectos</span>
+                            <span class="liquid"></span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ url_for('create_projects') }}" class="btn-liquid">
+                            <span>Agregar Proyectos</span>
+                            <span class="liquid"></span>
+                        </a>
                     </li>
                 </ul>
 
@@ -83,8 +116,9 @@
                                     <p class="mb-1"><span class="badge bg-secondary">{{ p.orientacion }}</span></p>
                                     <p class="card-text">{{ p.contenido }}</p>
                                 </div>
-                                <div class="card-footer text-muted">
-                                    {{ p.fecha }}
+                                <div class="card-footer text-muted d-flex justify-content-between align-items-center">
+                                    <span>{{ p.fecha }}</span>
+                                    <a href="#" class="btn btn-sm btn-primary"><i class="fas fa-edit"></i> Editar</a>
                                 </div>
                             </div>
                         </div>
@@ -109,7 +143,7 @@
             </ul>
         </div>
     </footer>
-
+    </div>
 </body>
 
 </html>

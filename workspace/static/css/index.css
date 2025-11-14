@@ -1,5 +1,215 @@
-body {
-    padding-top: 70px;
+.card {
+    border-left: 4px solid #7e11b0;
 }
 
-/* Aquí puedes agregar más estilos personalizados */
+/*Fuente*/
+.font-titulo {
+    font-family: "Share Tech", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+}
+
+/* Fondo animado */
+.white {
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: #bdb9b9; /* gris claro */
+    z-index: 0;
+    overflow: hidden;
+}
+
+.white:before {
+    z-index: 1;
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 60vh;
+    background-image: linear-gradient(-180deg, #727272 0%, rgba(46,46,46,0) 100%);
+}
+
+.white:after {
+    z-index: 1;
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 20vh;
+    background-image: linear-gradient(0deg, #727272 0%, rgba(46,46,46,0) 100%);
+}
+
+.squares {
+    height: 100%;
+    display: flex;
+    justify-content: space-around;
+    overflow: hidden;
+    align-items: flex-end;
+}
+
+.square {
+    width: 1em;
+    height: 1em;
+    background: #7e11b0; /* morado */
+    border-radius: 20%; /* bordes suavizados */
+    transform: translateY(100%) rotate(0deg);
+    animation: squares 10s linear infinite;
+    opacity: 0.7; /* ligeramente transparente */
+}
+
+.square:nth-child(2) {
+    width: 3em;
+    height: 1.5em;
+    animation-delay: 1s;
+    animation-duration: 17s;
+    filter: blur(5px);
+}
+
+.square:nth-child(3) {
+    width: 1em;
+    height: 2em;
+    animation-delay: 1.5s;
+    animation-duration: 8s;
+}
+
+.square:nth-child(4) {
+    width: 1.5em;
+    height: 1em;
+    animation-delay: 0.5s;
+    filter: blur(3px);
+    animation-duration: 13s;
+}
+
+.square:nth-child(5) {
+    width: 2em;
+    height: 1.25em;
+    animation-delay: 4s;
+    filter: blur(2px);
+    animation-duration: 11s;
+}
+
+.square:nth-child(6) {
+    width: 2em;
+    height: 2.5em;
+    animation-delay: 2s;
+    filter: blur(1px);
+    animation-duration: 9s;
+}
+
+.square:nth-child(7) {
+    width: 2em;
+    height: 5em;
+    filter: blur(2.5px);
+    animation-duration: 12s;
+}
+
+.square:nth-child(8) {
+    width: 3em;
+    height: 1em;
+    animation-delay: 5s;
+    filter: blur(6px);
+    animation-duration: 18s;
+}
+
+.square:nth-child(9) {
+    width: 2.4em;
+    height: 3em;
+    animation-delay: 6s;
+    filter: blur(0.5px);
+    animation-duration: 12s;
+}
+
+@keyframes squares {
+    0% {
+        transform: translateY(100%) rotate(-50deg);
+        opacity: 0;
+    }
+    20% {
+        opacity: 0.8;
+    }
+    80% {
+        opacity: 0.8;
+    }
+    100% {
+        transform: translateY(calc(-100vh - 100%)) rotate(20deg);
+        opacity: 0;
+    }
+}
+
+.main-content {
+    position: relative;
+    z-index: 10;
+}
+
+
+/*Boton liquido*/
+.btn-liquid {
+    position: relative;
+    display: inline-block;
+    padding: 0.6em 1.5em;
+    color: #fff;
+    background: #7e11b0;
+    border: none;
+    border-radius: 0.5em;
+    overflow: hidden;
+    cursor: pointer;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.btn-liquid span {
+    position: relative;
+    z-index: 2;
+}
+
+.btn-liquid .liquid {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #b20ae6;
+    transform: translateY(100%);
+    transition: transform 0.5s ease-in-out;
+    border-radius: 0.5em;
+    z-index: 1;
+}
+
+.btn-liquid:hover .liquid {
+    transform: translateY(0);
+}
+
+/* Opcional: animación de ondas para simular líquido */
+.btn-liquid .liquid::before,
+.btn-liquid .liquid::after {
+    content: '';
+    position: absolute;
+    top: -25%;
+    width: 200%;
+    height: 200%;
+    background: inherit;
+    border-radius: 40%;
+    animation: wave 3s infinite linear;
+}
+
+.btn-liquid .liquid::after {
+    animation-delay: 1.5s;
+}
+
+@keyframes wave {
+    0% {
+        transform: translateX(-50%) translateY(0) rotate(0deg);
+    }
+
+    50% {
+        transform: translateX(-25%) translateY(-5%) rotate(0deg);
+    }
+
+    100% {
+        transform: translateX(-50%) translateY(0) rotate(0deg);
+    }
+}

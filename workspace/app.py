@@ -229,7 +229,7 @@ def create_projects():
             conn.commit()
             flash('Proyecto creado correctamente.', 'success')
             # Redirigir al panel admin al terminar
-            return redirect(url_for('admin_index'))
+            return redirect(url_for('admin_projects'))
         except mysql.connector.Error as e:
             # Mostrar error en consola y a través de flash para facilitar debug durante el desarrollo
             import traceback
