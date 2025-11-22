@@ -1,20 +1,17 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mi Proyecto Flask</title>
+    <title>Panel Admin</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Share+Tech&display=swap" rel="stylesheet">
-    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
-    <!-- Bootstrap JS Bundle with Popper -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/create_projects.css') }}">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </head>
 
@@ -38,14 +35,14 @@
     <div class="main-content">
         <!-- Nav bar -->
         <nav class="navbar navbar-dark bg-dark fixed-top">
-            <a class="navbar-brand ms-3" href="{{ url_for('home') }}">
+            <a class="navbar-brand ms-3" href="#">
                 <img src="https://github.githubassets.com/assets/GitHub-Mark-ea2971cee799.png" alt="Logo" width="30"
                     height="24" class="d-inline-block align-text-top" />
                 Máximo Vijarra
             </a>
 
             <div class="d-flex align-items-center">
-                <a href="{{ url_for('login') }}" class="btn btn-success me-2">Login</a>
+                <a href="{{ url_for('home') }}" class="btn btn-danger me-2">Cerrar sesión</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas"
                     data-bs-target="#offcanvasDarkNavbar" aria-controls="offcanvasDarkNavbar"
                     aria-label="Toggle navigation">
@@ -56,27 +53,29 @@
             <div class="offcanvas offcanvas-end text-bg-dark" tabindex="-1" id="offcanvasDarkNavbar"
                 aria-labelledby="offcanvasDarkNavbarLabel">
                 <div class="offcanvas-header">
-                    <h5 class="" id="offcanvasDarkNavbarLabel">Navbar</h5>
+                    <h5 class="offcanvas-title" id="offcanvasDarkNavbarLabel">Navbar</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"
                         aria-label="Close"></button>
                 </div>
 
+                <!-- cuerpo del offcanvas -->
                 <div class="offcanvas-body d-flex flex-column h-100">
                     <ul class="navbar-nav flex-grow-1 pe-3">
                         <li class="nav-item">
-                            <a href="{{ url_for('home') }}" class="btn-liquid" aria-current="page">
+                            <a href="{{ url_for('admin_index') }}" class="btn-liquid" aria-current="page">
                                 <span>Inicio</span>
                                 <span class="liquid"></span>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="{{ url_for('projects') }}" class="btn-liquid">
+                            <a href="{{ url_for('admin_projects') }}" class="btn-liquid">
                                 <span>Proyectos</span>
                                 <span class="liquid"></span>
                             </a>
                         </li>
                     </ul>
 
+                    <!-- redes al final -->
                     <div class="mt-auto text-center pb-3">
                         <hr class="text-secondary" />
                         <div class="d-flex justify-content-around">
@@ -97,56 +96,43 @@
         <!-- Cuerpo -->
         <div class="contenido">
             <div class="container mt-5 pt-5">
-                <div class="card_principal">
-                    <img src="../static/imgs/card.png" class="card-img-top" alt="...">
-                    <div class="card-body">
-                        <h1>Máximo Vijarra</h1>
-                        <p class="card-text">easfaefaefeafaefaefeafaef</p>
-                    </div>
-                </div>
-                <h2 class="mt-4">Experiencias Laborales</h2>
-                <div class="row mt-2">
-                    {% set laborales = experiencias|selectattr('tipo','equalto','Laboral')|list %}
-                    {% if laborales and laborales|length > 0 %}
-                    {% for e in laborales %}
-                    <div class="col-12 mb-3">
-                        <div class="card">
-                            <div class="card-body">
-                                <h5 class="card-title">{{ e.lugar }} <small class="text-muted">{{ e.fecha_inicio }}{% if
-                                        e.fecha_fin %} - {{ e.fecha_fin }}{% endif %}</small></h5>
-                                <p class="card-text">{{ e.descripcion }}</p>
-                            </div>
-                        </div>
-                    </div>
+                <h1>Editar experiencia</h1>
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ 'danger' if category == 'danger' else ( 'success' if category == 'success' else 'info') }}" role="alert">{{ message }}</div>
                     {% endfor %}
-                    {% else %}
-                    <div class="col-12">
-                        <p>No hay experiencias laborales registradas.</p>
+                {% endif %}
+                {% endwith %}
+                <form method="post" action="{{ url_for('edit_experiencias', id=experiencia.id) }}">
+                    <h2>Lugar</h2>
+                    <div class="input-group mb-3">
+                        <input name="lugar" type="text" class="form-control" placeholder="Empresa / Lugar" aria-label="Lugar" required value="{{ experiencia.Lugar }}">
                     </div>
-                    {% endif %}
-                </div>
-
-                <h2 class="mt-4">Experiencias Educativas</h2>
-                <div class="row mt-2">
-                    {% set educativas = experiencias|selectattr('tipo','equalto','Educativa')|list %}
-                    {% if educativas and educativas|length > 0 %}
-                    {% for e in educativas %}
-                    <div class="col-12 mb-3">
-                        <div class="card">
-                            <div class="card-body">
-                                <h5 class="card-title">{{ e.lugar }} <small class="text-muted">{{ e.fecha_inicio }}{% if
-                                        e.fecha_fin %} - {{ e.fecha_fin }}{% endif %}</small></h5>
-                                <p class="card-text">{{ e.descripcion }}</p>
-                            </div>
-                        </div>
+                    <h2>Tipo</h2>
+                    <div class="input-group mb-3">
+                        <select name="tipo" class="form-select" aria-label="Tipo">
+                            <option value="Laboral" {% if experiencia.Tipo == "Laboral" %}selected{% endif %}>Laboral</option>
+                            <option value="Educativa" {% if experiencia.Tipo == "Educativa" %}selected{% endif %}>Educativa</option>
+                        </select>
                     </div>
-                    {% endfor %}
-                    {% else %}
-                    <div class="col-12">
-                        <p>No hay experiencias educativas registradas.</p>
+                    <h2>Fecha inicio (año)</h2>
+                    <div class="input-group mb-3">
+                        <input name="fecha_inicio" type="number" min="1900" max="2100" class="form-control" placeholder="2020" aria-label="Fecha inicio" required value="{{ experiencia.Fecha_inicio }}">
                     </div>
-                    {% endif %}
-                </div>
+                    <h2>Fecha fin (año)</h2>
+                    <div class="input-group mb-3">
+                        <input name="fecha_fin" type="number" min="1900" max="2100" class="form-control" placeholder="2022" aria-label="Fecha fin" value="{{ experiencia.Fecha_fin }}">
+                    </div>
+                    <h2>Descripción</h2>
+                    <div class="input-group">
+                        <textarea name="descripcion" class="form-control" aria-label="Descripcion" rows="6" required>{{ experiencia.Descripcion }}</textarea>
+                    </div>
+                    <div class="mt-3">
+                        <button type="submit" class="btn btn-success">Guardar cambios</button>
+                        <a href="{{ url_for('admin_index') }}" class="btn btn-secondary ms-2">Cancelar</a>
+                    </div>
+                </form>
             </div>
         </div>
 
@@ -154,11 +140,6 @@
         <footer class="footer mt-5 py-4 bg-dark text-white">
             <div class="container-fluid text-center">
                 <p class="mb-1">© 2025 Tu Nombre. Todos los derechos reservados.</p>
-                <ul class="list-inline mb-0">
-                    <li class="list-inline-item"><a href="#" class="text-white text-decoration-none">Inicio</a></li>
-                    <li class="list-inline-item"><a href="#" class="text-white text-decoration-none">Contacto</a></li>
-                    <li class="list-inline-item"><a href="#" class="text-white text-decoration-none">Privacidad</a></li>
-                </ul>
             </div>
         </footer>
     </div>

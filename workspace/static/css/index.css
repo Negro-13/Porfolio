@@ -1,3 +1,15 @@
+/*Cartas*/
+
+
+.card_principal {
+    background-color: #ffffff;
+    border: 1px solid rgba(0,0,0,0.1);
+    border-radius: .5rem;
+}
+.card_principal .card-body {
+    padding: 1rem;   /* separa el contenido del borde */
+}
+
 .card {
     border-left: 4px solid #7e11b0;
 }

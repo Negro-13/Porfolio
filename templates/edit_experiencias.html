@@ -1,0 +1,27 @@
+<!-- ...puedes agregar tu header y estilos aquí... -->
+<h2>Editar Experiencia</h2>
+<form method="POST">
+  <div>
+    <label for="lugar">Lugar:</label>
+    <input type="text" id="lugar" name="lugar" value="{{ experiencia.Lugar }}" required>
+  </div>
+  <div>
+    <label for="tipo">Tipo:</label>
+    <input type="text" id="tipo" name="tipo" value="{{ experiencia.Tipo }}">
+  </div>
+  <div>
+    <label for="fecha_inicio">Fecha inicio:</label>
+    <input type="date" id="fecha_inicio" name="fecha_inicio" value="{{ experiencia.Fecha_inicio|default('', true) }}" required>
+  </div>
+  <div>
+    <label for="fecha_fin">Fecha fin:</label>
+    <input type="date" id="fecha_fin" name="fecha_fin" value="{{ experiencia.Fecha_fin|default('', true) }}">
+  </div>
+  <div>
+    <label for="descripcion">Descripción:</label>
+    <textarea id="descripcion" name="descripcion" required>{{ experiencia.Descripcion }}</textarea>
+  </div>
+  <button type="submit" class="btn btn-success">Guardar cambios</button>
+  <a href="{{ url_for('admin_index') }}" class="btn btn-secondary">Cancelar</a>
+</form>
+<!-- ...puedes agregar tu footer aquí... -->

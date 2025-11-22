@@ -108,17 +108,19 @@
 
             <div class="row mt-4">
                 {% if projects and projects|length > 0 %}
-                    {% for p in projects %}
+                    {% for project in projects %}
                         <div class="col-12 mb-3">
                             <div class="card h-100">
                                 <div class="card-body">
-                                    <h5 class="card-title">{{ p.titulo }}</h5>
-                                    <p class="mb-1"><span class="badge bg-secondary">{{ p.orientacion }}</span></p>
-                                    <p class="card-text">{{ p.contenido }}</p>
+                                    <h5 class="card-title">{{ project.titulo }}</h5>
+                                    <p class="mb-1"><span class="badge bg-secondary">{{ project.orientacion }}</span></p>
+                                    <p class="card-text">{{ project.contenido }}</p>
                                 </div>
                                 <div class="card-footer text-muted d-flex justify-content-between align-items-center">
-                                    <span>{{ p.fecha }}</span>
-                                    <a href="#" class="btn btn-sm btn-primary"><i class="fas fa-edit"></i> Editar</a>
+                                    <span>{{ project.fecha }}</span>
+                                    <a href="{{ url_for('edit_projects') }}?id={{ project.id }}" class="btn btn-primary btn-sm">
+                                        <i class="fas fa-edit"></i> Editar
+                                    </a>
                                 </div>
                             </div>
                         </div>
