@@ -38,102 +38,150 @@
     <div class="main-content">
         <!-- Nav bar -->
         <nav class="navbar navbar-dark bg-dark fixed-top">
-        <a class="navbar-brand ms-3" href="{{ url_for('home') }}">
-            <img src="https://github.githubassets.com/assets/GitHub-Mark-ea2971cee799.png" alt="Logo" width="30"
-                height="24" class="d-inline-block align-text-top" />
-            Máximo Vijarra
-        </a>
+            <a class="navbar-brand ms-3" href="{{ url_for('home') }}">
+                <img src="https://github.githubassets.com/assets/GitHub-Mark-ea2971cee799.png" alt="Logo" width="30"
+                    height="24" class="d-inline-block align-text-top" />
+                Máximo Vijarra
+            </a>
 
-        <div class="d-flex align-items-center">
-            <a href="{{ url_for('login') }}" class="btn btn-success me-2">Login</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas"
-                data-bs-target="#offcanvasDarkNavbar" aria-controls="offcanvasDarkNavbar"
-                aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-        </div>
-
-        <div class="offcanvas offcanvas-end text-bg-dark" tabindex="-1" id="offcanvasDarkNavbar"
-            aria-labelledby="offcanvasDarkNavbarLabel">
-            <div class="offcanvas-header">
-                <h5 class="" id="offcanvasDarkNavbarLabel">Navbar</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"
-                    aria-label="Close"></button>
+            <div class="d-flex align-items-center">
+                <a href="{{ url_for('login') }}" class="btn btn-success me-2">Login</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas"
+                    data-bs-target="#offcanvasDarkNavbar" aria-controls="offcanvasDarkNavbar"
+                    aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
             </div>
 
-            <div class="offcanvas-body d-flex flex-column h-100">
-                <ul class="navbar-nav flex-grow-1 pe-3">
-                    <li class="nav-item">
-                        <a href="{{ url_for('home') }}" class="btn-liquid" aria-current="page">
-                            <span>Inicio</span>
-                            <span class="liquid"></span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="{{ url_for('projects') }}" class="btn-liquid">
-                            <span>Proyectos</span>
-                            <span class="liquid"></span>
-                        </a>
-                    </li>
-                </ul>
+            <div class="offcanvas offcanvas-end text-bg-dark" tabindex="-1" id="offcanvasDarkNavbar"
+                aria-labelledby="offcanvasDarkNavbarLabel">
+                <div class="offcanvas-header">
+                    <h5 class="" id="offcanvasDarkNavbarLabel">Navbar</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"
+                        aria-label="Close"></button>
+                </div>
 
-                <div class="mt-auto text-center pb-3">
-                    <hr class="text-secondary" />
-                    <div class="d-flex justify-content-around">
-                        <a href="https://www.instagram.com/max_vijarra86?igsh=MWVncXoxZXJuMGxzbQ==" target="_blank" class="text-light fs-4">
-                            <i class="fab fa-instagram"></i>
-                        </a>
-                        <a href="https://wa.me/543518684140" target="_blank" class="text-light fs-4">
-                            <i class="fab fa-whatsapp"></i>
-                        </a>
-                        <a href="https://github.com/Negro-13" target="_blank" class="text-light fs-4">
-                            <i class="fab fa-github"></i>
-                        </a>
+                <div class="offcanvas-body d-flex flex-column h-100">
+                    <ul class="navbar-nav flex-grow-1 pe-3">
+                        <li class="nav-item">
+                            <a href="{{ url_for('home') }}" class="btn-liquid" aria-current="page">
+                                <span>Inicio</span>
+                                <span class="liquid"></span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ url_for('projects') }}" class="btn-liquid">
+                                <span>Proyectos</span>
+                                <span class="liquid"></span>
+                            </a>
+                        </li>
+                    </ul>
+
+                    <div class="mt-auto text-center pb-3">
+                        <hr class="text-secondary" />
+                        <div class="d-flex justify-content-around">
+                            <a href="https://www.instagram.com/max_vijarra86?igsh=MWVncXoxZXJuMGxzbQ==" target="_blank"
+                                class="text-light fs-4">
+                                <i class="fab fa-instagram"></i>
+                            </a>
+                            <a href="https://wa.me/543518684140" target="_blank" class="text-light fs-4">
+                                <i class="fab fa-whatsapp"></i>
+                            </a>
+                            <a href="https://github.com/Negro-13" target="_blank" class="text-light fs-4">
+                                <i class="fab fa-github"></i>
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </nav>
-    <!-- Cuerpo -->
-    <div class="contenido">
-        <div class="container mt-5 pt-5">
-            <h1>¡Bienvenido a mi proyecto Flask!</h1>
+        </nav>
+        <!-- Cuerpo -->
+        <div class="contenido">
+            <div class="container mt-5 pt-5">
+                <h1>Proyectos personales y grupales</h1>
 
-            <div class="row mt-4">
-                {% if projects and projects|length > 0 %}
-                    {% for p in projects %}
-                        <div class="col-12 mb-3">
-                            <div class="card h-100">
-                                <div class="card-body">
-                                    <h5 class="card-title">{{ p.titulo }}</h5>
-                                    <p class="mb-1"><span class="badge bg-secondary">{{ p.orientacion }}</span></p>
-                                    <p class="card-text">{{ p.contenido }}</p>
-                                </div>
-                                <div class="card-footer text-muted">
-                                    {{ p.fecha }}
+                <div class="row mt-4">
+                    <!-- Card manual siempre visible -->
+                    <div class="col-12 mb-3">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <h5 class="card-title">One Day Videogame</h5>
+                                <p class="mb-1"><span class="badge bg-secondary">Programacion</span></p>
+                                <p class="card-text">El One Day Game es una competencia de la ONIET organizada por la
+                                    Universidad Blas Pascal. Esta competencia consiste en desarrollar un videojuego con
+                                    una temática específica desde cero en 8 horas, en un equipo de hasta cinco personas.
+                                    En mi caso, participé junto a algunos compañeros de curso.</p>
+                                <p>Este año, la temática elegida fue "Loop", la cual dejaba bastante abierta la
+                                    creatividad del equipo. Nosotros decidimos desarrollar un juego de plataformas
+                                    utilizando Godot, que trataba sobre un caballero creado por un mago para salvar al
+                                    mundo viajando al pasado.</p>
+                                <p>Al comenzar el desarrollo, nos dividimos en distintos roles: sprites (Ricaud),
+                                    jugador y físicas (Pedrazzi), interfaz de usuario (Josías), mapas y enemigos (yo).
+                                    Gracias al buen trabajo en equipo y al esfuerzo que realizamos, pudimos entregar una
+                                    demo del juego, quedando así en 3.er lugar en la competencia.</p>
+                                <div id="carouselExample" class="carousel slide carousel-custom-controls">
+                                    <button class="carousel-control-prev" type="button"
+                                        data-bs-target="#carouselExample" data-bs-slide="prev">
+                                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                        <span class="visually-hidden">Previous</span>
+                                    </button>
+                                    <div class="carousel-inner">
+                                        <div class="carousel-item active">
+                                            <img src="../static/imgs/ganadores.png" class="carousel-img-small" alt="Imagen 1">
+                                        </div>
+                                        <div class="carousel-item">
+                                            <img src="../static/imgs/player.png" class="carousel-img-small" alt="Imagen 2">
+                                        </div>
+                                        <div class="carousel-item">
+                                            <img src="../static/imgs/mapa.png" class="carousel-img-small" alt="Imagen 3">
+                                        </div>
+                                    </div>
+                                    <button class="carousel-control-next" type="button"
+                                        data-bs-target="#carouselExample" data-bs-slide="next">
+                                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                        <span class="visually-hidden">Next</span>
+                                    </button>
                                 </div>
                             </div>
+                            <div class="card-footer text-muted">
+                                2025-10-16
+                            </div>
                         </div>
+                    </div>
+                    {% if projects and projects|length > 0 %}
+                    {% for p in projects %}
+                    <div class="col-12 mb-3">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ p.titulo }}</h5>
+                                <p class="mb-1"><span class="badge bg-secondary">{{ p.orientacion }}</span></p>
+                                <p class="card-text">{{ p.contenido }}</p>
+                            </div>
+                            <div class="card-footer text-muted">
+                                {{ p.fecha }}
+                            </div>
+                        </div>
+                    </div>
                     {% endfor %}
-                {% else %}
+                    {% else %}
                     <div class="col-12">
                         <p>No hay proyectos para mostrar.</p>
                     </div>
-                {% endif %}
+                    {% endif %}
+                </div>
             </div>
         </div>
-    </div>
 
-    <!-- Footer -->
-    <footer class="footer mt-5 py-4 bg-dark text-white">
-        <div class="container-fluid text-center">
-            <p class="mb-1">© 2025 Tu Nombre. Todos los derechos reservados.</p>
-            <ul class="list-inline mb-0">
-                <li class="list-inline-item"><a href="#" class="text-white text-decoration-none">Inicio</a></li>
-                <li class="list-inline-item"><a href="#" class="text-white text-decoration-none">Contacto</a></li>
-                <li class="list-inline-item"><a href="#" class="text-white text-decoration-none">Privacidad</a></li>
-            </ul>
-        </div>
+        <!-- Footer -->
+        <footer class="footer mt-5 py-4 bg-dark text-white">
+            <div class="container-fluid text-center">
+                <p class="mb-1">© 2025 Tu Nombre. Todos los derechos reservados.</p>
+                <ul class="list-inline mb-0">
+                    <li class="list-inline-item"><a href="#" class="text-white text-decoration-none">Inicio</a></li>
+                    <li class="list-inline-item"><a href="#" class="text-white text-decoration-none">Contacto</a></li>
+                    <li class="list-inline-item"><a href="#" class="text-white text-decoration-none">Privacidad</a></li>
+                </ul>
+            </div>
         </footer>
     </div>
 </body>

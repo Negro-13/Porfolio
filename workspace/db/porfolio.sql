@@ -11,7 +11,8 @@ id int auto_increment primary key,
 Titulo varchar(50),
 Orientacion varchar(50),
 Contenido text,
-fecha varchar(50)
+fecha varchar(50),
+imagen text
 );
 
 create table Experiencias(
@@ -20,7 +21,8 @@ Lugar varchar(50),
 Tipo varchar(50),
 Fecha_inicio year,
 Fecha_fin year,
-Descripcion text
+Descripcion text,
+imagen text
 );
 
 select * from Proyectos;

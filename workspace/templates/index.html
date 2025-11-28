@@ -102,7 +102,11 @@
                     <img src="../static/imgs/card.png" class="card-img-top" alt="...">
                     <div class="card-body">
                         <h1>Máximo Vijarra</h1>
-                        <p class="card-text">easfaefaefeafaefaefeafaef</p>
+                        <p class="card-text">Estudiante de secundaria con gran interés en la programación y la tecnología. Me destaco por mi rápida capacidad de aprendizaje y motivación para enfrentar nuevos desafíos. Poseo conocimientos en Front-end, Back-end, bases de datos, y desarrollo de aplicaciones web, y busco adquirir experiencia práctica, mejorar mis habilidades y contribuir en proyectos que me permitan seguir aprendiendo y creciendo profesionalmente.</p>
+                        <!-- Botón para descargar el CV -->
+                        <a href="{{ url_for('static', filename='archivos/CV_Maximo_Vijarra_Tabarcache.pdf') }}" class="btn btn-primary mt-3" download>
+                            <i class="fa fa-download"></i> Descargar CV
+                        </a>
                     </div>
                 </div>
                 <h2 class="mt-4">Experiencias Laborales</h2>
@@ -151,6 +155,69 @@
             </div>
         </div>
 
+        <!-- Sección de gráficos de habilidades dentro de una card -->
+        <div class="container mt-5 mb-5">
+            <div class="card">
+                <div class="card-body">
+                    <h2 class="mb-4 text-center">Mis conocimientos y habilidades blandas</h2>
+                    <div class="row justify-content-center">
+                        <div class="col-md-6 mb-4">
+                            <canvas id="graficoConocimientos"></canvas>
+                        </div>
+                        <div class="col-md-6 mb-4">
+                            <canvas id="graficoHabilidades"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Chart.js CDN -->
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script>
+            // Gráfico de conocimientos técnicos
+            const ctxConocimientos = document.getElementById('graficoConocimientos').getContext('2d');
+            new Chart(ctxConocimientos, {
+                type: 'bar',
+                data: {
+                    labels: ['Python', 'HTML', 'CSS', 'JavaScript', 'SQL', 'GDScript'],
+                    datasets: [{
+                        label: 'Nivel (%)',
+                        data: [85, 80, 75, 40, 55, 65],
+                        backgroundColor: [
+                            '#7e11b0', '#b20ae6', '#727272', '#4e4e4e', '#bdb9b9', '#11b07e'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: { beginAtZero: true, max: 100 }
+                    }
+                }
+            });
+
+            // Gráfico de habilidades blandas
+            const ctxHabilidades = document.getElementById('graficoHabilidades').getContext('2d');
+            new Chart(ctxHabilidades, {
+                type: 'radar',
+                data: {
+                    labels: ['Trabajo en equipo', 'Comunicación', 'Creatividad', 'Resolución de problemas', 'Responsabilidad', 'Organización'],
+                    datasets: [{
+                        label: 'Nivel',
+                        data: [85, 60, 90, 75, 80, 87],
+                        backgroundColor: 'rgba(126,17,176,0.2)',
+                        borderColor: '#7e11b0',
+                        pointBackgroundColor: '#7e11b0'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        r: { beginAtZero: true, max: 100 }
+                    }
+                }
+            });
+        </script>
         <!-- Footer -->
         <footer class="footer mt-5 py-4 bg-dark text-white">
             <div class="container-fluid text-center">

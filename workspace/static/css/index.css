@@ -1,5 +1,10 @@
 /*Cartas*/
-
+.carousel-img-small {
+    max-width: 420px;
+    max-height: 250px;
+    margin: 0 auto;
+    display: block;
+}
 
 .card_principal {
     background-color: #ffffff;
@@ -224,4 +229,30 @@
     100% {
         transform: translateX(-50%) translateY(0) rotate(0deg);
     }
+}
+
+/* Carrusel con flechas cerca de la imagen */
+.carousel-custom-controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.carousel-custom-controls .carousel-inner {
+    flex: 1 1 auto;
+}
+
+.carousel-custom-controls .carousel-control-prev,
+.carousel-custom-controls .carousel-control-next {
+    position: static;
+    width: auto;
+    height: auto;
+    margin: 0 0.2rem;
+}
+
+/* Flechas del carrusel en gris oscuro */
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+    filter: brightness(0) saturate(100%) invert(20%) sepia(0%) saturate(0%) hue-rotate(0deg) brightness(0.5);
 }
