@@ -5,17 +5,16 @@ import os
 
 app = Flask(__name__)
 
-app.secret_key = 'tu_clave_secreta'  # Necesario para sesiones
+app.secret_key = 'tu_clave_secreta'
 
 db_config = {
     "host": "localhost",
-    "port": '3308',  # Puerto por defecto de MySQL
+    "port": '3308',
     "user": "root",
     "password": "root",
     "database": "Porfolio"
 }
 
-# Aseguramos que la conexión use UTF-8 para manejar correctamente nombres con ñ
 db_config.update({
     "charset": "utf8mb4",
     "use_unicode": True,
@@ -32,17 +31,11 @@ def allowed_file(filename):
 def get_db_connection():
     return mysql.connector.connect(**db_config)
 
-
 def get_projects():
-    """Devuelve una lista de proyectos desde la base de datos.
-    Cada proyecto es un dict con claves: id, titulo, contenido, fecha.
-    En caso de error devuelve lista vacía.
-    """
     conn = None
     cursor = None
     try:
         conn = get_db_connection()
-        # Usamos un cursor que devuelva diccionarios para facilitar la plantilla
         cursor = conn.cursor(dictionary=True)
         cursor.execute("SELECT id, Titulo, Contenido, fecha, Orientacion FROM Proyectos ORDER BY id DESC")
         rows = cursor.fetchall()
@@ -71,11 +64,7 @@ def get_projects():
         except Exception:
             pass
 
-
 def get_experiencias():
-    """Devuelve lista de experiencias desde la tabla Experiencias.
-    Cada elemento: id, Lugar, Tipo, Fecha_inicio, Fecha_fin, Descripcion, imagen
-    """
     conn = None
     cursor = None
     try:
@@ -112,60 +101,49 @@ def get_experiencias():
 
 @app.route('/')
 def home():
-    # Pasamos sólo el estado de sesión (logueado o no). No se mostrará el nombre.
     logged_in = session.get('logged_in', False)
-    # Obtener proyectos y pasarlos a la plantilla pública
     projects = get_projects()
     experiencias = get_experiencias()
     return render_template('index.html', logged_in=logged_in, projects=projects, experiencias=experiencias)
 
 @app.route('/admin')
 def admin_index():
-    # Si no está logueado, redirigimos al home público
     if not session.get('logged_in'):
         return redirect(url_for('home'))
-    # Obtener proyectos y mostrarlos en el panel de administración
     projects = get_projects()
     experiencias = get_experiencias()
     return render_template('index_admin.html', projects=projects, experiencias=experiencias, logged_in=True)
 
 @app.route('/projects')
 def projects():
-    # Pasamos sólo el estado de sesión (logueado o no). No se mostrará el nombre.
     logged_in = session.get('logged_in', False)
     projects = get_projects()
     return render_template('proyectos.html', logged_in=logged_in, projects=projects)
 
 @app.route('/admin/projects')
 def admin_projects():
-    # Si no está logueado, redirigimos al home público
     if not session.get('logged_in'):
         return redirect(url_for('home'))
-    # Obtener proyectos y mostrarlos en el panel de administración
     projects = get_projects()
     return render_template('proyectos_admin.html', projects=projects, logged_in=True)
-
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == "POST":
         email = request.form["email"]
         password = request.form["password"]
-        # Intentamos conectar a la base de datos y buscar el usuario en la tabla Users
         conn = None
         cursor = None
         result = None
         try:
             conn = get_db_connection()
             cursor = conn.cursor()
-            # La tabla en tu SQL es `Users` con columnas `Email` y `Contraseña`.
             cursor.execute(
                 "SELECT Email FROM `Users` WHERE Email=%s AND `Contraseña`=%s",
                 (email, password),
             )
             result = cursor.fetchone()
         except mysql.connector.Error as e:
-            # No mostramos notificaciones al usuario; registramos en consola para debug
             print('DB error:', e)
             result = None
         finally:
@@ -180,17 +158,12 @@ def login():
             except Exception:
                 pass
         if result:
-            # Marcamos la sesión como iniciada, pero NO guardamos ni mostramos el nombre
             session['logged_in'] = True
-            # Al iniciar sesión redirigimos al área de administración
             return redirect(url_for("admin_index"))
-    # Si GET o fallo en POST, mostramos el formulario de login
     return render_template("login.html")
-
 
 @app.route('/logout')
 def logout():
-    # Eliminar la información de sesión y redirigir a home
     session.pop('logged_in', None)
     return redirect(url_for('home'))
 
@@ -199,23 +172,19 @@ def create_projects():
     if not session.get('logged_in'):
         return redirect(url_for('home'))
 
-    # Si vienen datos vía POST, los guardamos en la base de datos
     if request.method == 'POST':
         titulo = request.form.get('titulo', '').strip()
         contenido = request.form.get('contenido', '').strip()
         fecha = request.form.get('fecha', '').strip()
         orientacion = request.form.get('orientacion', '').strip()
 
-        # Si no se envió fecha, usar la fecha de hoy
         if not fecha:
             from datetime import date
             fecha = date.today().isoformat()
 
-        # Si no se envió orientacion, usar 'Otros'
         if not orientacion:
             orientacion = 'Otros'
 
-        # Validación mínima
         if not titulo or not contenido:
             return render_template('create_projects.html', logged_in=session.get('logged_in', False))
 
@@ -224,17 +193,14 @@ def create_projects():
         try:
             conn = get_db_connection()
             cursor = conn.cursor()
-            # Para depuración imprimimos los parámetros que vamos a insertar
             print('Insertando proyecto con:', {'titulo': titulo, 'orientacion': orientacion, 'contenido_len': len(contenido), 'fecha': fecha})
             cursor.execute(
                 "INSERT INTO Proyectos (Titulo, Orientacion, Contenido, fecha) VALUES (%s, %s, %s, %s)",
                 (titulo, orientacion, contenido, fecha),
             )
             conn.commit()
-            # Redirigir al panel admin al terminar
             return redirect(url_for('admin_projects'))
         except mysql.connector.Error as e:
-            # Mostrar error en consola y a través de flash para facilitar debug durante el desarrollo
             import traceback
             traceback.print_exc()
             print('DB error (insert project):', e)
@@ -250,9 +216,7 @@ def create_projects():
             except Exception:
                 pass
 
-    # GET: mostrar el formulario
     return render_template('create_projects.html', logged_in=session.get('logged_in', False))
-
 
 @app.route('/admin/create_experiencias', methods=['GET', 'POST'])
 def create_experiencias():
@@ -267,13 +231,11 @@ def create_experiencias():
         descripcion = request.form.get('descripcion', '').strip()
         imagen = None
 
-        # Procesar imagen si se subió
         if 'imagen' in request.files:
             file = request.files['imagen']
             if file and allowed_file(file.filename):
                 filename = secure_filename(file.filename)
                 filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-                # Crear la carpeta si no existe justo antes de guardar
                 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
                 file.save(filepath)
                 imagen = filename
@@ -284,7 +246,6 @@ def create_experiencias():
         if not lugar or not descripcion or not fecha_inicio:
             return render_template('create_experiencias.html', logged_in=session.get('logged_in', False))
 
-        # Intentamos insertar en DB
         conn = None
         cursor = None
         try:
@@ -314,7 +275,6 @@ def create_experiencias():
     return render_template('create_experiencias.html', logged_in=session.get('logged_in', False))
 
 def get_experiencia_by_id(exp_id):
-    """Devuelve una experiencia por su id."""
     conn = None
     cursor = None
     try:
@@ -364,7 +324,6 @@ def edit_experiencias():
         if not lugar or not descripcion or not fecha_inicio:
             return render_template('edit_experiencias.html', experiencia=experiencia, logged_in=True)
 
-        # Guardar solo el año como string (puedes ajustar si tu DB espera otro formato)
         fecha_inicio_db = fecha_inicio if fecha_inicio else None
         fecha_fin_db = fecha_fin if fecha_fin else None
 
@@ -394,11 +353,9 @@ def edit_experiencias():
             except Exception:
                 pass
 
-    # GET: mostrar el formulario con los datos actuales
     return render_template('edit_experiencias.html', experiencia=experiencia, logged_in=True)
 
 def get_project_by_id(project_id):
-    """Devuelve un proyecto por su id."""
     conn = None
     cursor = None
     try:
