@@ -113,6 +113,12 @@
                                 <div class="card-body">
                                     <h5 class="card-title">{{ e.lugar }} <small class="text-muted">{{ e.fecha_inicio }}{% if e.fecha_fin %} - {{ e.fecha_fin }}{% endif %}</small></h5>
                                     <p class="card-text">{{ e.descripcion }}</p>
+                                    <!-- Mostrar imagen si existe, abajo de la descripción -->
+                                    {% if e.imagen %}
+                                    <div class="d-flex justify-content-center mt-3">
+                                        <img src="{{ url_for('static', filename='imgs/' ~ e.imagen) }}" alt="Imagen experiencia" style="height:180px;width:auto;object-fit:cover;border-radius:1rem;">
+                                    </div>
+                                    {% endif %}
                                 </div>
                                 <div class="card-footer d-flex justify-content-between align-items-center">
                                     <small class="text-muted">Tipo: {{ e.tipo }}</small>
@@ -138,6 +144,12 @@
                                 <div class="card-body">
                                     <h5 class="card-title">{{ e.lugar }} <small class="text-muted">{{ e.fecha_inicio }}{% if e.fecha_fin %} - {{ e.fecha_fin }}{% endif %}</small></h5>
                                     <p class="card-text">{{ e.descripcion }}</p>
+                                    <!-- Mostrar imagen si existe, abajo de la descripción -->
+                                    {% if e.imagen %}
+                                    <div class="d-flex justify-content-center mt-3">
+                                        <img src="{{ url_for('static', filename='imgs/' ~ e.imagen) }}" alt="Imagen experiencia" style="height:180px;width:auto;object-fit:cover;border-radius:1rem;">
+                                    </div>
+                                    {% endif %}
                                 </div>
                                 <div class="card-footer d-flex justify-content-between align-items-center">
                                     <small class="text-muted">Tipo: {{ e.tipo }}</small>
@@ -154,6 +166,69 @@
             </div>
         </div>
     </div>
+    <!-- Sección de gráficos de habilidades dentro de una card -->
+    <div class="container mt-5 mb-5">
+        <div class="card">
+            <div class="card-body">
+                <h2 class="mb-4 text-center">Mis conocimientos y habilidades blandas</h2>
+                <div class="row justify-content-center">
+                    <div class="col-md-6 mb-4">
+                        <canvas id="graficoConocimientos"></canvas>
+                    </div>
+                    <div class="col-md-6 mb-4">
+                        <canvas id="graficoHabilidades"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Gráfico de conocimientos técnicos
+        const ctxConocimientos = document.getElementById('graficoConocimientos').getContext('2d');
+        new Chart(ctxConocimientos, {
+            type: 'bar',
+            data: {
+                labels: ['Python', 'HTML', 'CSS', 'JavaScript', 'SQL', 'GDScript'],
+                datasets: [{
+                    label: 'Nivel (%)',
+                    data: [85, 80, 75, 40, 55, 65],
+                    backgroundColor: [
+                        '#7e11b0', '#b20ae6', '#727272', '#4e4e4e', '#bdb9b9', '#11b07e'
+                    ]
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: { beginAtZero: true, max: 100 }
+                }
+            }
+        });
+
+        // Gráfico de habilidades blandas
+        const ctxHabilidades = document.getElementById('graficoHabilidades').getContext('2d');
+        new Chart(ctxHabilidades, {
+            type: 'radar',
+            data: {
+                labels: ['Trabajo en equipo', 'Comunicación', 'Creatividad', 'Resolución de problemas', 'Responsabilidad', 'Organización'],
+                datasets: [{
+                    label: 'Nivel',
+                    data: [85, 60, 90, 75, 80, 87],
+                    backgroundColor: 'rgba(126,17,176,0.2)',
+                    borderColor: '#7e11b0',
+                    pointBackgroundColor: '#7e11b0'
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    r: { beginAtZero: true, max: 100 }
+                }
+            }
+        });
+    </script>
     <footer class="footer mt-5 py-4 bg-dark text-white">
         <div class="container-fluid text-center">
             <p class="mb-1">© 2025 Tu Nombre. Todos los derechos reservados.</p>

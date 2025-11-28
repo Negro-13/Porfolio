@@ -99,7 +99,7 @@
                 {% endfor %}
             {% endif %}
             {% endwith %}
-            <form method="post" action="{{ url_for('create_experiencias') }}">
+            <form method="post" action="{{ url_for('create_experiencias') }}" enctype="multipart/form-data">
                 <h2>Lugar</h2>
                 <div class="input-group mb-3">
                     <input name="lugar" type="text" class="form-control" placeholder="Empresa / Lugar" aria-label="Lugar" required>
@@ -122,6 +122,10 @@
                 <h2>Descripción</h2>
                 <div class="input-group">
                     <textarea name="descripcion" class="form-control" aria-label="Descripcion" rows="6" required></textarea>
+                </div>
+                <h2>Imagen</h2>
+                <div class="input-group mb-3">
+                    <input name="imagen" type="file" class="form-control" accept="image/*">
                 </div>
                 <div class="mt-3">
                     <button type="submit" class="btn btn-primary">Crear experiencia</button>

@@ -1,5 +1,8 @@
-from flask import Flask, render_template, request, redirect, url_for, session, flash
+from flask import Flask, render_template, request, redirect, url_for, session
 import mysql.connector
+from werkzeug.utils import secure_filename
+import os
+
 app = Flask(__name__)
 
 app.secret_key = 'tu_clave_secreta'  # Necesario para sesiones
@@ -18,6 +21,13 @@ db_config.update({
     "use_unicode": True,
 })
 
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+UPLOAD_FOLDER = os.path.join(BASE_DIR, 'static', 'imgs')
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 def get_db_connection():
     return mysql.connector.connect(**db_config)
@@ -64,14 +74,14 @@ def get_projects():
 
 def get_experiencias():
     """Devuelve lista de experiencias desde la tabla Experiencias.
-    Cada elemento: id, Lugar, Tipo, Fecha_inicio, Fecha_fin, Descripcion
+    Cada elemento: id, Lugar, Tipo, Fecha_inicio, Fecha_fin, Descripcion, imagen
     """
     conn = None
     cursor = None
     try:
         conn = get_db_connection()
         cursor = conn.cursor(dictionary=True)
-        cursor.execute("SELECT id, Lugar, Tipo, Fecha_inicio, Fecha_fin, Descripcion FROM Experiencias ORDER BY Fecha_inicio DESC")
+        cursor.execute("SELECT id, Lugar, Tipo, Fecha_inicio, Fecha_fin, Descripcion, imagen FROM Experiencias ORDER BY Fecha_inicio DESC")
         rows = cursor.fetchall()
         experiencias = []
         for r in rows:
@@ -82,6 +92,7 @@ def get_experiencias():
                 'fecha_inicio': r.get('Fecha_inicio'),
                 'fecha_fin': r.get('Fecha_fin'),
                 'descripcion': r.get('Descripcion'),
+                'imagen': r.get('imagen'),
             })
         return experiencias
     except Exception as e:
@@ -206,7 +217,6 @@ def create_projects():
 
         # Validación mínima
         if not titulo or not contenido:
-            flash('El título y el contenido son obligatorios.', 'danger')
             return render_template('create_projects.html', logged_in=session.get('logged_in', False))
 
         conn = None
@@ -221,7 +231,6 @@ def create_projects():
                 (titulo, orientacion, contenido, fecha),
             )
             conn.commit()
-            flash('Proyecto creado correctamente.', 'success')
             # Redirigir al panel admin al terminar
             return redirect(url_for('admin_projects'))
         except mysql.connector.Error as e:
@@ -229,7 +238,6 @@ def create_projects():
             import traceback
             traceback.print_exc()
             print('DB error (insert project):', e)
-            flash(f'Error al guardar en la base de datos: {e}', 'danger')
         finally:
             try:
                 if cursor:
@@ -257,14 +265,23 @@ def create_experiencias():
         fecha_inicio = request.form.get('fecha_inicio', '').strip()
         fecha_fin = request.form.get('fecha_fin', '').strip()
         descripcion = request.form.get('descripcion', '').strip()
+        imagen = None
 
-        # Si no se envía tipo, usar 'Laboral' por defecto
+        # Procesar imagen si se subió
+        if 'imagen' in request.files:
+            file = request.files['imagen']
+            if file and allowed_file(file.filename):
+                filename = secure_filename(file.filename)
+                filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+                # Crear la carpeta si no existe justo antes de guardar
+                os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
+                file.save(filepath)
+                imagen = filename
+
         if not tipo:
             tipo = 'Laboral'
 
-        # Validación mínima
         if not lugar or not descripcion or not fecha_inicio:
-            flash('Lugar, fecha inicio y descripción son obligatorios.', 'danger')
             return render_template('create_experiencias.html', logged_in=session.get('logged_in', False))
 
         # Intentamos insertar en DB
@@ -274,16 +291,14 @@ def create_experiencias():
             conn = get_db_connection()
             cursor = conn.cursor()
             cursor.execute(
-                "INSERT INTO Experiencias (Lugar, Tipo, Fecha_inicio, Fecha_fin, Descripcion) VALUES (%s, %s, %s, %s, %s)",
-                (lugar, tipo, fecha_inicio if fecha_inicio else None, fecha_fin if fecha_fin else None, descripcion),
+                "INSERT INTO Experiencias (Lugar, Tipo, Fecha_inicio, Fecha_fin, Descripcion, imagen) VALUES (%s, %s, %s, %s, %s, %s)",
+                (lugar, tipo, fecha_inicio if fecha_inicio else None, fecha_fin if fecha_fin else None, descripcion, imagen),
             )
             conn.commit()
-            flash('Experiencia creada correctamente.', 'success')
             return redirect(url_for('admin_index'))
         except mysql.connector.Error as e:
             import traceback
             traceback.print_exc()
-            flash(f'Error al guardar la experiencia: {e}', 'danger')
         finally:
             try:
                 if cursor:
@@ -330,12 +345,10 @@ def edit_experiencias():
 
     exp_id = request.args.get('id')
     if not exp_id:
-        flash('No se especificó la experiencia a editar.', 'danger')
         return redirect(url_for('admin_index'))
 
     experiencia = get_experiencia_by_id(exp_id)
     if not experiencia:
-        flash('No se encontró la experiencia.', 'danger')
         return redirect(url_for('admin_index'))
 
     if request.method == 'POST':
@@ -349,7 +362,6 @@ def edit_experiencias():
             tipo = 'Laboral'
 
         if not lugar or not descripcion or not fecha_inicio:
-            flash('Lugar, año de inicio y descripción son obligatorios.', 'danger')
             return render_template('edit_experiencias.html', experiencia=experiencia, logged_in=True)
 
         # Guardar solo el año como string (puedes ajustar si tu DB espera otro formato)
@@ -370,7 +382,6 @@ def edit_experiencias():
         except mysql.connector.Error as e:
             import traceback
             traceback.print_exc()
-            flash(f'Error al actualizar la experiencia: {e}', 'danger')
         finally:
             try:
                 if cursor:
@@ -418,12 +429,10 @@ def edit_projects():
 
     project_id = request.args.get('id')
     if not project_id:
-        flash('No se especificó el proyecto a editar.', 'danger')
         return redirect(url_for('admin_projects'))
 
     project = get_project_by_id(project_id)
     if not project:
-        flash('No se encontró el proyecto.', 'danger')
         return redirect(url_for('admin_projects'))
 
     if request.method == 'POST':
@@ -439,7 +448,6 @@ def edit_projects():
             fecha = date.today().isoformat()
 
         if not titulo or not contenido:
-            flash('El título y el contenido son obligatorios.', 'danger')
             return render_template('edit_projects.html', project=project, logged_in=True)
 
         conn = None
@@ -456,7 +464,6 @@ def edit_projects():
         except mysql.connector.Error as e:
             import traceback
             traceback.print_exc()
-            flash(f'Error al actualizar el proyecto: {e}', 'danger')
         finally:
             try:
                 if cursor:
